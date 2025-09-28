@@ -129,8 +129,9 @@ const Chat: FC<ChatProps> = ({
   const chatFooterInnerRef = useRef<HTMLDivElement>(null)
   const userScrolledRef = useRef(false)
 
+  // scroll to bottom when new message is published
   const handleScrollToBottom = useCallback(() => {
-    if (chatList.length > 1 && chatContainerRef.current && !userScrolledRef.current)
+    if (chatList.length > 1 && chatContainerRef.current)
       chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight
   }, [chatList.length])
 
