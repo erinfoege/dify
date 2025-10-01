@@ -129,9 +129,9 @@ const Chat: FC<ChatProps> = ({
   const chatFooterInnerRef = useRef<HTMLDivElement>(null)
   const userScrolledRef = useRef(false)
 
-  // scroll to bottom when new message is published
+  // Always scroll to bottom when a new message is added
   const handleScrollToBottom = useCallback(() => {
-    if (chatList.length > 1 && chatContainerRef.current)
+    if (chatContainerRef.current)
       chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight
   }, [chatList.length])
 
@@ -149,7 +149,7 @@ const Chat: FC<ChatProps> = ({
   useEffect(() => {
     handleScrollToBottom()
     handleWindowResize()
-  }, [handleScrollToBottom, handleWindowResize])
+  }, [chatList.length, handleScrollToBottom, handleWindowResize])
 
   useEffect(() => {
     if (chatContainerRef.current) {
@@ -161,8 +161,13 @@ const Chat: FC<ChatProps> = ({
   })
 
   useEffect(() => {
-    window.addEventListener('resize', debounce(handleWindowResize))
-    return () => window.removeEventListener('resize', handleWindowResize)
+    const debouncedHandler = debounce(handleWindowResize, 200)
+    window.addEventListener('resize', debouncedHandler)
+
+    return () => {
+      window.removeEventListener('resize', debouncedHandler)
+      debouncedHandler.cancel()
+    }
   }, [handleWindowResize])
 
   useEffect(() => {
